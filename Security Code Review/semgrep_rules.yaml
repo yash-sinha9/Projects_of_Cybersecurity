@@ -1,0 +1,33 @@
+rules:
+  - id: dom-xss-innerhtml
+    pattern-either:
+      - pattern: $ELEMENT.innerHTML = $X + $Y
+      - pattern: $ELEMENT.innerHTML = ... + $VAR + ...
+      - pattern: $ELEMENT.innerHTML = $VAR
+      - pattern: $ELEMENT.innerHTML = `...${$VAR}...`
+    message: |
+      Vulnerability: DOM-based Cross-Site Scripting (XSS).
+      Assigning unsanitized input to element.innerHTML allows executing arbitrary scripts in the context of the page.
+      Remediation: Use `element.textContent` for plain text, or safely construct nodes via `document.createElement` / `appendChild`.
+    languages:
+      - javascript
+    severity: WARNING
+
+  - id: redirect-without-exit
+    patterns:
+      - pattern: |
+          window.location.href = $URL;
+          ...
+      - pattern-not: |
+          window.location.href = $URL;
+          return;
+      - pattern-not: |
+          window.location.href = $URL;
+          throw ...;
+    message: |
+      Vulnerability: Incomplete Execution Termination after Redirect.
+      Setting window.location.href redirects the browser, but it does not stop the execution of the remaining JavaScript in the current page context. Attackers can execute actions before the redirect completes.
+      Remediation: Always append a `return;` or `throw` immediately after setting window.location.href to stop execution.
+    languages:
+      - javascript
+    severity: WARNING

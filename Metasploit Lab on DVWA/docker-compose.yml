@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  dvwa:
+    image: vulnerables/web-dvwa:latest
+    container_name: dvwa-lab
+    ports:
+      - "80:80"
+    environment:
+      - PHP_XDEBUG_ENABLED=0
+    restart: unless-stopped

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulated Inbox (Vulnerable)</title>
+  <script src="vulnerable_app.js"></script>
+</head>
+<body>
+  <h2>Simulated Email Client</h2>
+  <div id="email-subject">Subject: Loading...</div>
+  <div id="email-from">From: Loading...</div>
+  <div id="email-body">Body: Loading...</div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const campaignId = params.get("campaignId") || "c1";
+    const targetEmail = params.get("targetEmail") || "";
+
+    const state = getAppState();
+    const campaign = state.campaigns.find(c => c.id === campaignId) || state.campaigns[0];
+
+    const finalEmail = targetEmail || campaign.targetEmail;
+
+    // SECURITY VULNERABILITY 1: Redirect without exiting execution
+    if (!isEmailWhitelisted(finalEmail)) {
+      alert("Verification Failed: Email is not whitelisted. Redirecting...");
+      window.location.href = "consent.html";
+      // Notice: No "return;" or "throw" here! The script continues executing below!
+    }
+
+    const emailTemplate = `
+      <div style="font-family: Arial; padding: 20px;">
+        <h3>Microsoft Outlook Alert</h3>
+        <p>Dear user with address <strong>${finalEmail}</strong>,</p>
+        <p>Your password expires in 2 hours. Please reset it.</p>
+        <a href="#" id="phish-link">Reset Password</a>
+      </div>
+    `;
+
+    // SECURITY VULNERABILITY 2: DOM-based XSS (Unsanitized targetEmail/finalEmail rendered into innerHTML)
+    document.getElementById("email-body").innerHTML = emailTemplate;
+
+    document.getElementById("phish-link").addEventListener("click", (e) => {
+      e.preventDefault();
+      recordSimulationMetric(campaign.id, "click");
+      window.location.href = `login_simulation.html?campaignId=${campaign.id}&targetEmail=${encodeURIComponent(finalEmail)}`;
+    });
+  </script>
+</body>
+</html>

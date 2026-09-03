@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defend&Attack: API Security Testing Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <header class="app-header">
+        <div class="logo-container">
+            <span class="logo-icon">⚡</span>
+            <h1>Defend&Attack: <span class="accent-text">API Security Lab</span></h1>
+        </div>
+        <div class="header-status">
+            <span class="status-indicator online"></span>
+            <span class="status-text">Simulated API: ONLINE</span>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">LAB MODULES</div>
+            <nav class="lab-nav">
+                <button class="nav-item active" data-lab="bola">
+                    <span class="lab-id">LAB 01</span>
+                    <span class="lab-name">BOLA Vulnerability</span>
+                    <span class="lab-status pending">●</span>
+                </button>
+                <button class="nav-item" data-lab="mass-assignment">
+                    <span class="lab-id">LAB 02</span>
+                    <span class="lab-name">Mass Assignment</span>
+                    <span class="lab-status pending">●</span>
+                </button>
+                <button class="nav-item" data-lab="rate-limiting">
+                    <span class="lab-id">LAB 03</span>
+                    <span class="lab-name">Rate Limiting</span>
+                    <span class="lab-status pending">●</span>
+                </button>
+                <button class="nav-item" data-lab="key-exposure">
+                    <span class="lab-id">LAB 04</span>
+                    <span class="lab-name">API Key Exposure</span>
+                    <span class="lab-status pending">●</span>
+                </button>
+            </nav>
+
+            <div class="db-inspector">
+                <div class="db-header">
+                    <span>MOCK DATABASE INSPECTOR</span>
+                    <span class="refresh-indicator">AUTO-SYNC</span>
+                </div>
+                <div class="db-body" id="db-viewer">
+                    <!-- Dynamic database content will go here -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Lab Guide Card -->
+            <section class="guide-card">
+                <div class="card-header">
+                    <h2>Lab Guide</h2>
+                    <span class="badge" id="challenge-badge">Level: Beginner</span>
+                </div>
+                <div class="card-body">
+                    <div id="guide-content">
+                        <!-- Guide text dynamically injected -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Testing Suite (Postman/Burp Suite Simulator) -->
+            <section class="tester-card">
+                <div class="card-header">
+                    <div class="tabs">
+                        <button class="tab active">Request Builder</button>
+                        <button class="tab" id="sec-console-tab">Security Console</button>
+                    </div>
+                    <div class="lab-target-objective">
+                        <span>Target: </span><code id="target-objective-url">/api/v1/orders</code>
+                    </div>
+                </div>
+                <div class="card-body console-body">
+                    <div class="request-composer">
+                        <div class="request-line">
+                            <select id="req-method" class="req-select">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                            </select>
+                            <input type="text" id="req-url" class="req-input" value="/api/v1/orders?id=101">
+                            <button id="btn-send" class="btn btn-primary">SEND REQUEST</button>
+                        </div>
+
+                        <div class="request-details">
+                            <div class="headers-section">
+                                <div class="section-title">Request Headers</div>
+                                <div class="header-inputs" id="header-inputs-container">
+                                    <div class="header-row">
+                                        <input type="text" class="hdr-key" placeholder="Key" value="Content-Type" disabled>
+                                        <input type="text" class="hdr-val" placeholder="Value" value="application/json" disabled>
+                                    </div>
+                                    <div class="header-row">
+                                        <input type="text" class="hdr-key" placeholder="Key" value="Authorization" disabled>
+                                        <input type="text" class="hdr-val" placeholder="Value" value="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.user-alice" disabled>
+                                    </div>
+                                    <!-- Dynamic headers can be added for key-exposure challenge -->
+                                    <div id="dynamic-headers"></div>
+                                </div>
+                            </div>
+
+                            <div class="body-section">
+                                <div class="section-title">Request Body (JSON)</div>
+                                <textarea id="req-body" class="req-textarea" placeholder="{}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulated Response Window -->
+                    <div class="response-panel">
+                        <div class="panel-header">
+                            <span>Response Terminal</span>
+                            <span class="response-status" id="res-status">200 OK</span>
+                        </div>
+                        <div class="panel-body">
+                            <pre><code id="res-body">{
+  "status": "waiting",
+  "message": "Click SEND REQUEST to start simulated testing."
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Script imports -->
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulated Inbox (Secure)</title>
+  <script src="secure_app.js"></script>
+</head>
+<body>
+  <h2>Simulated Email Client</h2>
+  <div id="email-subject">Subject: Loading...</div>
+  <div id="email-from">From: Loading...</div>
+  <div id="email-body">Body: Loading...</div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const campaignId = params.get("campaignId") || "c1";
+    const targetEmail = params.get("targetEmail") || "";
+
+    const state = getAppState();
+    const campaign = state.campaigns.find(c => c.id === campaignId) || state.campaigns[0];
+
+    const finalEmail = targetEmail || campaign.targetEmail;
+
+    // REMEDIATION 1: Terminate execution immediately on redirect
+    if (!isEmailWhitelisted(finalEmail)) {
+      alert("Verification Failed: Email is not whitelisted. Redirecting...");
+      window.location.href = "consent.html";
+      throw new Error("Execution halted: User not whitelisted"); // Stops all script execution on the page
+    }
+
+    // REMEDIATION 2: Input Sanitization (escapeHTML) applied to finalEmail before innerHTML injection
+    const escapedEmail = escapeHTML(finalEmail);
+
+    const emailTemplate = `
+      <div style="font-family: Arial; padding: 20px;">
+        <h3>Microsoft Outlook Alert</h3>
+        <p>Dear user with address <strong>${escapedEmail}</strong>,</p>
+        <p>Your password expires in 2 hours. Please reset it.</p>
+        <a href="#" id="phish-link">Reset Password</a>
+      </div>
+    `;
+
+    document.getElementById("email-body").innerHTML = emailTemplate;
+
+    document.getElementById("phish-link").addEventListener("click", (e) => {
+      e.preventDefault();
+      recordSimulationMetric(campaign.id, "click");
+      window.location.href = `login_simulation.html?campaignId=${campaign.id}&targetEmail=${encodeURIComponent(finalEmail)}`;
+    });
+  </script>
+</body>
+</html>

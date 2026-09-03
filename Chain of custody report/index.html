@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forensic Custody - Chain of Custody Report & Verification</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-icon">🔍</span>
+                <div>
+                    <h1 class="logo-text">Forensic custody</h1>
+                    <div class="logo-sub">Chain of Custody</div>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a class="menu-item active" data-tab="dashboard-tab">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+                        </svg>
+                        Dashboard Overview
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item" data-tab="evidence-tab">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                        </svg>
+                        Evidence Register
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item" data-tab="custody-tab">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L17.5 12M21 7.5H7.5" />
+                        </svg>
+                        Transfer Ledger
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item" data-tab="verifier-tab">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                        </svg>
+                        Integrity Verifier
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item" data-tab="report-tab">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+                        Forensic Report
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item" data-tab="guide-tab">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                        </svg>
+                        Standards & Workflow
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                Version 1.2.0 • Digital Lab
+            </div>
+        </aside>
+
+        <!-- Main Dashboard View -->
+        <main class="main-content">
+            <!-- Header Row -->
+            <div class="header-wrapper">
+                <div>
+                    <h2 class="page-title" id="view-title">Dashboard Overview</h2>
+                    <p class="page-subtitle" id="view-subtitle">Real-time status of forensic acquisition & logging</p>
+                </div>
+                <div class="case-badge-container">
+                    <button class="btn btn-secondary" id="reset-case-btn">Reset Case Data</button>
+                    <div class="case-id-badge">
+                        <span>CASE ID:</span>
+                        <strong id="global-case-id">DFIR-2026-9982</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HERO BANNER (REPLICATING THE USER'S PROVIDED SLIDE AESTHETIC) -->
+            <section class="hero-banner">
+                <div class="banner-eyebrow">Digital Forensics & Incident Response</div>
+                <h3 class="banner-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:26px; height:26px; display:inline-block; vertical-align:middle; margin-right:4px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.64 8.38m6 2.58a14.94 14.94 0 0 1-5.84 7.38m0 0a14.96 14.96 0 0 1-7.44-7.51m7.44 7.51V12" />
+                    </svg>
+                    Why Industry Likes This Project: Chain of Custody Report
+                </h3>
+                <p class="banner-description">
+                    In real investigations, evidence handling is everything. A technically correct finding means nothing if the chain of custody is broken. This project teaches professional-grade forensic documentation.
+                </p>
+                <div style="font-weight: 600; margin-bottom: 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">You are showing:</div>
+                <div class="banner-bullets">
+                    <div class="bullet-item">
+                        <div class="bullet-dot"></div>
+                        Evidence collection and preservation procedures
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet-dot"></div>
+                        Hash verification for evidence integrity
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet-dot"></div>
+                        Court-admissible documentation standards
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet-dot"></div>
+                        Full forensic investigation workflow
+                    </div>
+                </div>
+                <div class="banner-highlight">
+                    This is one of the most professional projects a student can complete. It mirrors real casework.
+                </div>
+            </section>
+
+            <!-- TABS CONTENT -->
+
+            <!-- Tab 1: Dashboard -->
+            <div id="dashboard-tab" class="tab-content active-tab">
+                <!-- Metrics -->
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon blue">📁</div>
+                        <div class="metric-info">
+                            <span class="metric-value" id="stat-evidence-count">0</span>
+                            <span class="metric-label">Evidence Items</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon cyan">🔄</div>
+                        <div class="metric-info">
+                            <span class="metric-value" id="stat-transfers-count">0</span>
+                            <span class="metric-label">Custody Transfers</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon emerald">🛡️</div>
+                        <div class="metric-info">
+                            <span class="metric-value" id="stat-integrity-pct">100%</span>
+                            <span class="metric-label">Hash Integrity</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon amber">⚖️</div>
+                        <div class="metric-info">
+                            <span class="metric-value" id="stat-court-ready">Ready</span>
+                            <span class="metric-label">Court Readiness</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-grid">
+                    <!-- Left: Recent Evidence Table -->
+                    <div class="card" style="grid-column: span 2;">
+                        <div class="card-header">
+                            <h3 class="card-title">Active Forensic Evidence Inventory</h3>
+                            <button class="card-action-btn btn-go-tab" data-tab="evidence-tab">Manage Items &rarr;</button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item #</th>
+                                        <th>Description</th>
+                                        <th>Type/Source</th>
+                                        <th>Date Acquired</th>
+                                        <th>Original SHA-256</th>
+                                        <th>Current Custodian</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-evidence-table">
+                                    <!-- Populated by JS -->
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: var(--text-muted);">No evidence logged yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Quick Timeline -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Custody Movements</h3>
+                            <button class="card-action-btn btn-go-tab" data-tab="custody-tab">Log Transfer &rarr;</button>
+                        </div>
+                        <div class="timeline" id="dashboard-timeline">
+                            <!-- Populated by JS -->
+                            <div style="text-align: center; color: var(--text-muted); padding: 20px 0;">No history logged.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Evidence Register -->
+            <div id="evidence-tab" class="tab-content">
+                <div class="card-grid">
+                    <!-- Left: Log Evidence Form -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Register New Evidence Item</h3>
+                        </div>
+                        <form id="evidence-form">
+                            <div class="form-group">
+                                <label for="item-number">Item Number / Reference ID *</label>
+                                <input type="text" id="item-number" placeholder="e.g. Item-001, Item-HHD-A" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="evidence-description">Evidence Description *</label>
+                                <textarea id="evidence-description" rows="3" placeholder="Detailed physical description (e.g. Seagate 1TB HDD model ST1000DM010, blue SATA cable)" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="evidence-source">Evidence Source / Brand / Serial</label>
+                                <input type="text" id="evidence-source" placeholder="e.g. Suspect Laptop, Serial # W460ZXY2">
+                            </div>
+                            <div class="form-group">
+                                <label for="evidence-date">Acquisition Date & Time *</label>
+                                <input type="datetime-local" id="evidence-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hash-algorithm">Cryptographic Hashing Standard</label>
+                                <select id="hash-algorithm">
+                                    <option value="SHA-256">SHA-256 (Recommended)</option>
+                                    <option value="SHA-1">SHA-1 (Legacy)</option>
+                                    <option value="MD5">MD5 (Legacy)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="evidence-hash">Original Hash Value *</label>
+                                <div class="hash-input-container">
+                                    <input type="text" id="evidence-hash" style="font-family: var(--font-mono);" placeholder="Generate below or input manually..." required>
+                                </div>
+                            </div>
+
+                            <div style="border: 1px dashed var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 20px; background-color: rgba(255,255,255,0.01);">
+                                <label style="margin-bottom: 4px;">Quick Hash Helper (Browser-Based Hashing)</label>
+                                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Select a file to instantly calculate its SHA-256 value for the record.</p>
+                                <input type="file" id="evidence-helper-file" style="font-size: 12px; color: var(--text-secondary); width: 100%;">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Secure & Log Evidence</button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Evidence Table and details -->
+                    <div class="card" style="grid-column: span 2;">
+                        <div class="card-header">
+                            <h3 class="card-title">Acquisition Inventory Ledger</h3>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item #</th>
+                                        <th>Description</th>
+                                        <th>Acquisition Info</th>
+                                        <th>Date Logged</th>
+                                        <th>Hash Value</th>
+                                        <th>Verification Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="evidence-list-table">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Custody Ledger -->
+            <div id="custody-tab" class="tab-content">
+                <div class="card-grid">
+                    <!-- Left: Transfer Form -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Log Custody Transfer</h3>
+                        </div>
+                        <form id="transfer-form">
+                            <div class="form-group">
+                                <label for="transfer-item">Select Evidence Item *</label>
+                                <select id="transfer-item" required>
+                                    <option value="" disabled selected>-- Select Registered Item --</option>
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="transfer-from">Released By (Current Custodian) *</label>
+                                <input type="text" id="transfer-from" placeholder="e.g. Det. Sarah Connor, Cyber Unit" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transfer-to">Received By (New Custodian) *</label>
+                                <input type="text" id="transfer-to" placeholder="e.g. John Doe, Lead Forensic Analyst" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transfer-date">Date & Time of Transfer *</label>
+                                <input type="datetime-local" id="transfer-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transfer-purpose">Purpose of Transfer *</label>
+                                <select id="transfer-purpose" required>
+                                    <option value="Forensic Analysis">Forensic Analysis / Imaging</option>
+                                    <option value="Secured Storage">Secured Storage in Evidence Safe</option>
+                                    <option value="Court Presentation">Court Presentation</option>
+                                    <option value="Acquisition / Collection">Acquisition / Collection</option>
+                                    <option value="Returned to Owner">Returned to Owner</option>
+                                    <option value="Destruction">Destruction</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="transfer-location">Physical Location / Storage Medium *</label>
+                                <input type="text" id="transfer-location" placeholder="e.g. Forensic Lab Workstation 3, Safe Alpha" required>
+                            </div>
+                            <div class="form-group" style="margin-top: 24px;">
+                                <label class="checkbox-label" style="display: flex; align-items: center; gap: 8px; text-transform: none; font-weight: normal; color: var(--text-primary);">
+                                    <input type="checkbox" id="transfer-sign" required style="width: 16px; height: 16px; cursor: pointer;">
+                                    <span>I certify that this transfer complies with chain of custody laws.</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Record Transfer</button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Complete History Ledger -->
+                    <div class="card" style="grid-column: span 2;">
+                        <div class="card-header">
+                            <h3 class="card-title">Chronological Chain of Custody Audit Trail</h3>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Evidence Item #</th>
+                                        <th>From (Released)</th>
+                                        <th>To (Received)</th>
+                                        <th>Purpose</th>
+                                        <th>Location</th>
+                                        <th>Signature Certification</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="custody-ledger-table">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Integrity Verifier -->
+            <div id="verifier-tab" class="tab-content">
+                <div class="verifier-container">
+                    <!-- Left: Interactive Hash Recalculator -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Forensic Hash Verification</h3>
+                        </div>
+                        <div class="form-group">
+                            <label for="verify-item-select">Select Evidence Item to Verify</label>
+                            <select id="verify-item-select">
+                                <option value="" disabled selected>-- Select Item --</option>
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+
+                        <div id="original-hash-card" style="display: none; background-color: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                            <label style="color: var(--accent-cyan);">Registered Forensic Baseline Hash</label>
+                            <div id="original-hash-val" style="font-family: var(--font-mono); font-size: 13px; word-break: break-all; margin-top: 4px;"></div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Algorithm: <span id="original-hash-algo">SHA-256</span></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Compute Current Hash of Physical File</label>
+                            <div class="file-dropzone" id="verify-dropzone">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                                </svg>
+                                <span class="file-dropzone-text" id="dropzone-title">Drag & drop forensic file here or click to select</span>
+                                <span class="file-dropzone-subtext">Hashing runs completely in-browser via Web Crypto APIs</span>
+                                <input type="file" id="verify-file-input" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recomputed-hash">Calculated Hash Value</label>
+                            <input type="text" id="recomputed-hash" readonly style="font-family: var(--font-mono); color: var(--text-secondary);" placeholder="Awaiting file upload...">
+                        </div>
+
+                        <button id="run-verify-btn" class="btn btn-primary" style="width: 100%;" disabled>Verify Evidence Integrity</button>
+                    </div>
+
+                    <!-- Right: Dynamic Results Box -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Verification Outcome</h3>
+                        </div>
+                        <div style="display: flex; flex-direction: column; height: 100%; justify-content: center; align-items: center;" id="verify-placeholder">
+                            <span style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;">🛡️</span>
+                            <p style="color: var(--text-muted); font-size: 14px; text-align: center; max-width: 320px;">Upload a file and select an evidence item to verify hash matches for court submission.</p>
+                        </div>
+
+                        <div class="verification-result" id="verify-result-box">
+                            <div class="result-header" id="verify-result-header">
+                                <!-- Status Icon and text -->
+                            </div>
+                            <p class="report-paragraph" style="color: var(--text-secondary); margin-bottom: 20px;" id="verify-result-desc">
+                                <!-- Verification description -->
+                            </p>
+                            <table class="report-table" style="background: none; border-color: rgba(255,255,255,0.08); margin-bottom: 0;">
+                                <tr>
+                                    <th style="background-color: rgba(255,255,255,0.03); color: var(--text-secondary); border-color: rgba(255,255,255,0.08);">Source</th>
+                                    <th style="background-color: rgba(255,255,255,0.03); color: var(--text-secondary); border-color: rgba(255,255,255,0.08);">Value</th>
+                                </tr>
+                                <tr>
+                                    <td style="color: var(--text-secondary); border-color: rgba(255,255,255,0.08);">Baseline Registered Hash</td>
+                                    <td id="verify-baseline-cell" style="font-family: var(--font-mono); font-size: 11px; word-break: break-all; border-color: rgba(255,255,255,0.08);"></td>
+                                </tr>
+                                <tr>
+                                    <td style="color: var(--text-secondary); border-color: rgba(255,255,255,0.08);">Current Computed Hash</td>
+                                    <td id="verify-computed-cell" style="font-family: var(--font-mono); font-size: 11px; word-break: break-all; border-color: rgba(255,255,255,0.08);"></td>
+                                </tr>
+                            </table>
+                            <div style="margin-top: 24px; padding: 12px; background-color: rgba(0,0,0,0.2); border-radius: 6px; font-size: 12px; color: var(--text-secondary);" id="verify-standard-note">
+                                <!-- Standard Note -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 5: Report Generator -->
+            <div id="report-tab" class="tab-content">
+                <div class="report-workspace">
+                    <!-- Left: Metadata Controls -->
+                    <div class="card report-controls-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Report Settings</h3>
+                        </div>
+                        <div class="form-group">
+                            <label for="cfg-case-id">Case Number</label>
+                            <input type="text" id="cfg-case-id" value="DFIR-2026-9982">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfg-examiner">Lead Investigator</label>
+                            <input type="text" id="cfg-examiner" value="Det. John Doe, CFCE">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfg-agency">Agency/Organization</label>
+                            <input type="text" id="cfg-agency" value="National Digital Forensics Laboratory">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfg-suspect">Subject/Suspect</label>
+                            <input type="text" id="cfg-suspect" value="Robert A. Vance (N/A)">
+                        </div>
+                        <div class="form-group">
+                            <label for="cfg-incident">Incident Date</label>
+                            <input type="text" id="cfg-incident" value="August 19, 2026">
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 30px;">
+                            <button id="print-report-btn" class="btn btn-primary">
+                                🖨️ Export PDF / Print
+                            </button>
+                            <button id="export-json-btn" class="btn btn-secondary">
+                                📤 Export Case JSON
+                            </button>
+                            <button id="import-json-btn" class="btn btn-secondary" style="position: relative;">
+                                📥 Import Case JSON
+                                <input type="file" id="import-json-file" style="position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;">
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Print-Aesthetic Layout Paper -->
+                    <div class="report-preview-container" id="report-paper">
+                        <div class="report-header">
+                            <div style="font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: #64748b; margin-bottom: 6px;">COURT-ADMISSIBLE FORENSIC DOCUMENT</div>
+                            <h1>Forensic Chain of Custody Report</h1>
+                            <div class="report-header-sub" id="rpt-title-sub">DFIR Investigation - Case #DFIR-2026-9982</div>
+                        </div>
+
+                        <div class="report-metadata-grid">
+                            <div class="meta-field">
+                                <span class="meta-field-label">Case ID / Investigation Number</span>
+                                <span class="meta-field-value" id="rpt-case-id">DFIR-2026-9982</span>
+                            </div>
+                            <div class="meta-field">
+                                <span class="meta-field-label">Forensic Investigator</span>
+                                <span class="meta-field-value" id="rpt-examiner">Det. John Doe, CFCE</span>
+                            </div>
+                            <div class="meta-field">
+                                <span class="meta-field-label">Agency / Department</span>
+                                <span class="meta-field-value" id="rpt-agency">National Digital Forensics Laboratory</span>
+                            </div>
+                            <div class="meta-field">
+                                <span class="meta-field-label">Incident / Subject</span>
+                                <span class="meta-field-value" id="rpt-suspect">Robert A. Vance (N/A)</span>
+                            </div>
+                            <div class="meta-field">
+                                <span class="meta-field-label">Date of Incident Record</span>
+                                <span class="meta-field-value" id="rpt-incident-date">August 19, 2026</span>
+                            </div>
+                            <div class="meta-field">
+                                <span class="meta-field-label">Report Generation Timestamp</span>
+                                <span class="meta-field-value" id="rpt-gen-time">August 19, 2026 11:15:00 AM</span>
+                            </div>
+                        </div>
+
+                        <div class="report-section">
+                            <h2 class="report-section-title">1. Executive Summary & Purpose</h2>
+                            <p class="report-paragraph">
+                                This document serves as the official chain of custody record for evidence seized and processed in connection with case reference <strong id="rpt-summary-case">DFIR-2026-9982</strong>. The integrity of the evidence enumerated below has been maintained via secure lockers, write-blocked acquisitions, and mathematical hash values in compliance with ISO/IEC 27037:2012 standards.
+                            </p>
+                        </div>
+
+                        <div class="report-section">
+                            <h2 class="report-section-title">2. Seised Forensic Evidence Inventory</h2>
+                            <p class="report-paragraph">
+                                The following electronic and physical media were acquired during the course of the investigation. Cryptographic hash values were calculated immediately upon acquisition.
+                            </p>
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%;">Item #</th>
+                                        <th style="width: 45%;">Item Description & Acquisition Details</th>
+                                        <th style="width: 15%;">Date Acquired</th>
+                                        <th style="width: 30%;">Acquisition Cryptographic Hash</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rpt-evidence-table">
+                                    <!-- Filled by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="report-section">
+                            <h2 class="report-section-title">3. Chronological Transfer Ledger (Audit Trail)</h2>
+                            <p class="report-paragraph">
+                                The complete movement log of all items since seizure is documented chronologically below. Any gap or unrecorded custody transfer invalidates court admissibility.
+                            </p>
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 18%;">Timestamp</th>
+                                        <th style="width: 10%;">Item #</th>
+                                        <th style="width: 20%;">Released By</th>
+                                        <th style="width: 20%;">Received By</th>
+                                        <th style="width: 17%;">Purpose / Event</th>
+                                        <th style="width: 15%;">Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rpt-custody-table">
+                                    <!-- Filled by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="report-section">
+                            <h2 class="report-section-title">4. Integrity Certification</h2>
+                            <p class="report-paragraph">
+                                I, the undersigned investigator, do hereby certify under penalty of perjury that the evidence items logged in Section 2 were handled, stored, and examined in accordance with standard forensic practices. The mathematical hash values computed at time of capture match the verification trials, confirming that the contents of these digital records have not been altered, modified, or corrupted since seizure.
+                            </p>
+                            
+                            <div class="report-signatures">
+                                <div class="sig-block">
+                                    <div class="sig-line"></div>
+                                    <div class="sig-name" id="rpt-sig-name-1">Det. John Doe, CFCE</div>
+                                    <div class="sig-title">Lead Digital Forensics Examiner</div>
+                                </div>
+                                <div class="sig-block">
+                                    <div class="sig-line"></div>
+                                    <div class="sig-name"></div>
+                                    <div class="sig-title">Witness / Witnessing Officer</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 6: Standards Guide -->
+            <div id="guide-tab" class="tab-content">
+                <div class="card-grid">
+                    <div class="card" style="grid-column: span 3;">
+                        <div class="card-header">
+                            <h3 class="card-title">Professional Standards Checklist</h3>
+                        </div>
+                        <p class="report-paragraph" style="color: var(--text-secondary); margin-bottom: 24px;">
+                            For digital evidence to be admissible in a court of law, investigators must strictly adhere to the guidelines set by <strong>ISO/IEC 27037 (Guidelines for identification, collection, acquisition, and preservation of digital evidence)</strong> and <strong>NIST SP 800-86 (Guide to Integrating Forensic Techniques into Incident Response)</strong>.
+                        </p>
+
+                        <!-- Step-by-Step Interactive Guide -->
+                        <div class="workflow-step completed" data-step="1">
+                            <div class="workflow-step-title">
+                                Phase 1: Identification & Protection of Scene
+                                <span class="badge badge-success">Standards Compliant</span>
+                            </div>
+                            <p class="report-paragraph" style="color: var(--text-secondary);">
+                                Pinpoint the potential source devices and secure the physical scene. Avoid changing the state of any device (do not turn running computers off or non-running computers on without justification).
+                            </p>
+                            <ul class="workflow-checklist">
+                                <li class="checklist-item">
+                                    <input type="checkbox" checked disabled>
+                                    <span>Establish physical perimeter and secure target digital devices.</span>
+                                </li>
+                                <li class="checklist-item">
+                                    <input type="checkbox" checked disabled>
+                                    <span>Photograph physical interfaces, cable hookups, and screen contents before touching.</span>
+                                </li>
+                                <li class="checklist-item">
+                                    <input type="checkbox" checked disabled>
+                                    <span>Block signal connectivity (activate airplane mode, insert in Faraday bags) to prevent remote wipes.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="workflow-step" id="step-2" data-step="2">
+                            <div class="workflow-step-title">
+                                Phase 2: Acquisition & Cryptographic Hashing
+                                <span class="badge badge-info" id="badge-step-2">In Progress</span>
+                            </div>
+                            <p class="report-paragraph" style="color: var(--text-secondary);">
+                                Duplicate the storage medium bit-for-bit to create a forensic image (E01 or RAW). A write-blocker must be used to prevent write cycles on target media. Calculate SHA-256 hash immediately.
+                            </p>
+                            <ul class="workflow-checklist">
+                                <li class="checklist-item">
+                                    <input type="checkbox" id="chk-2-1">
+                                    <span>Connect target hard drive/USB to forensic workstation using a hardware write-blocker (e.g. Tableau T8u).</span>
+                                </li>
+                                <li class="checklist-item">
+                                    <input type="checkbox" id="chk-2-2">
+                                    <span>Create bit-stream clone using FTK Imager, dd, or EnCase, storing it in E01 / RAW format.</span>
+                                </li>
+                                <li class="checklist-item">
+                                    <input type="checkbox" id="chk-2-3">
+                                    <span>Generate original SHA-256 acquisition hash and record it in the case register.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="workflow-step" id="step-3" data-step="3">
+                            <div class="workflow-step-title">
+                                Phase 3: Custody & Secure Storage
+                                <span class="badge badge-warning" id="badge-step-3">Pending</span>
+                            </div>
+                            <p class="report-paragraph" style="color: var(--text-secondary);">
+                                Establish the Chain of Custody ledger. Store evidence in secure, anti-static storage lockers with key-card logs. Document every transfer in real-time.
+                            </p>
+                            <ul class="workflow-checklist">
+                                <li class="checklist-item">
+                                    <input type="checkbox" id="chk-3-1">
+                                    <span>Label device with case number, investigator initials, and unique item number.</span>
+                                </li>
+                                <li class="checklist-item">
+                                    <input type="checkbox" id="chk-3-2">
+                                    <span>Seal item in anti-static forensic bag with tamper-evident tape.</span>
+                                </li>
+                                <li class="checklist-item">
+                                    <input type="checkbox" id="chk-3-3">
+                                    <span>Log initial acquisition transfer details in the Chain of Custody tracking system.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="workflow-step" id="step-4" data-step="4">
+                            <div class="workflow-step-title">
+                                Phase 4: Analysis & Final Court Admissibility Report
+                                <span class="badge badge-warning" id="badge-step-4">Pending</span>
+                            </div>
+                            <p class="report-paragraph" style="color: var(--text-secondary);">
+                                Analyze the forensic clones (never analyze original media!). Before beginning research, re-verify baseline hashes. Create a final report summarizing timeline of events.
+                            </p>
+                            <ul class="workflow-checklist">
+                                <li class="checklist-item">
+                                    <input type="checkbox" id="chk-4-1">
+                                    <span>Re-hash evidence files and compare against original baseline to prove no data modifications.</span>
+                                </li>
+                                <li class="checklist-item">
+                                    <input type="checkbox" id="chk-4-2">
+                                    <span>Search forensic images using Autopsy, Axiom, or Volatility for artifacts (deleted files, registry keys).</span>
+                                </li>
+                                <li class="checklist-item">
+                                    <input type="checkbox" id="chk-4-3">
+                                    <span>Compile findings, case notes, and Chain of Custody audit logs into the final legal report.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

