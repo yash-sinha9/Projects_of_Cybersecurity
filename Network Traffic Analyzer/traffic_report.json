@@ -1,0 +1,70 @@
+{
+    "summary": {
+        "total_packets": 80,
+        "total_bytes": 48320,
+        "protocols": {
+            "TCP": 48,
+            "UDP": 16,
+            "DNS": 12,
+            "ICMP": 4
+        },
+        "ip_talkers": {
+            "192.168.1.105": 62,
+            "10.0.0.45": 16,
+            "198.51.100.77": 11,
+            "8.8.8.8": 12,
+            "142.250.190.46": 8,
+            "185.220.101.5": 2
+        }
+    },
+    "total_alerts": 4,
+    "alerts": [
+        {
+            "timestamp": "2026-09-03 14:20:11",
+            "level": "HIGH",
+            "category": "Port Scanning Detected",
+            "description": "Host 10.0.0.45 connected to 16 unique ports within 5.0s (Reconnaissance)",
+            "src_ip": "10.0.0.45",
+            "dst_ip": "192.168.1.105",
+            "details": {
+                "probed_ports": [100, 110, 120, 130, 140, 150, 160, 170, 180, 190]
+            }
+        },
+        {
+            "timestamp": "2026-09-03 14:20:12",
+            "level": "HIGH",
+            "category": "Suspicious Port Activity",
+            "description": "Traffic observed on port 4444: Metasploit Default Listener / Reverse Shell",
+            "src_ip": "192.168.1.105",
+            "dst_ip": "185.220.101.5",
+            "details": {
+                "port": 4444,
+                "service_name": "Metasploit Default Listener / Reverse Shell"
+            }
+        },
+        {
+            "timestamp": "2026-09-03 14:20:13",
+            "level": "CRITICAL",
+            "category": "Cleartext Sensitive Data Leak",
+            "description": "Potential unencrypted credentials or authorization token detected in payload",
+            "src_ip": "192.168.1.105",
+            "dst_ip": "192.168.1.50",
+            "details": {
+                "matched_token": "PASS",
+                "sample_payload": "USER admin | PASS SuperSecret123!"
+            }
+        },
+        {
+            "timestamp": "2026-09-03 14:20:14",
+            "level": "HIGH",
+            "category": "Suspicious DNS Tunneling / Exfiltration",
+            "description": "Abnormally long DNS query domain detected (68 chars): a8f39b7d8c001e33f679bca3488d.exfil-data-chunk.c2server-malicious.org",
+            "src_ip": "192.168.1.105",
+            "dst_ip": "8.8.8.8",
+            "details": {
+                "query": "a8f39b7d8c001e33f679bca3488d.exfil-data-chunk.c2server-malicious.org",
+                "length": 68
+            }
+        }
+    ]
+}
