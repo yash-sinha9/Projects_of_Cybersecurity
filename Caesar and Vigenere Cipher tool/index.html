@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classical Cipher & Cryptanalysis Studio | Caesar & Vigenère</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="badge-tag">
+        <span>🛡️ Cryptography & Security Engineering</span>
+      </div>
+      <h1>Caesar & Vigenère Cipher Suite</h1>
+      <p class="subtitle">
+        A classical encryption & automated cryptanalysis toolkit demonstrating substitution algorithms, 
+        Index of Coincidence (IoC), and Chi-Squared frequency analysis to break ciphers without keys.
+      </p>
+    </header>
+
+    <!-- Interactive Workspace Grid -->
+    <div class="layout-grid">
+      
+      <!-- Input Panel -->
+      <div class="glass-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>⚙️ Cipher Configuration</span>
+          </div>
+          <div class="tab-group">
+            <button class="tab-btn cipher-tab active" id="tab-caesar">Caesar</button>
+            <button class="tab-btn cipher-tab" id="tab-vigenere">Vigenère</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Operation Mode</label>
+          <div class="tab-group" style="width: 100%;">
+            <button class="tab-btn mode-tab active" id="mode-encrypt" style="flex: 1;">Encrypt</button>
+            <button class="tab-btn mode-tab" id="mode-decrypt" style="flex: 1;">Decrypt</button>
+            <button class="tab-btn mode-tab" id="mode-crack" style="flex: 1; color: #38bdf8;">⚡ Auto-Crack</button>
+          </div>
+        </div>
+
+        <!-- Caesar Shift Controls -->
+        <div id="caesar-controls" class="form-group">
+          <label for="caesarShift">Caesar Shift Key (k &in; [0, 25])</label>
+          <div class="slider-container">
+            <input type="range" id="caesarShift" min="0" max="25" value="3">
+            <div class="slider-val" id="shiftValDisplay">3</div>
+          </div>
+        </div>
+
+        <!-- Vigenère Key Controls -->
+        <div id="vigenere-controls" class="form-group" style="display: none;">
+          <label for="vigenereKey">Vigenère Keyword</label>
+          <input type="text" id="vigenereKey" value="KEYWORD" placeholder="e.g. CIPHER, SECRET">
+          <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
+            Key repeats cyclically across plaintext alphabetic characters.
+          </small>
+        </div>
+
+        <!-- Text Input Area -->
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label for="inputText" style="margin-bottom: 0;">Input Text</label>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-outline" id="btn-preset-1" style="padding: 4px 8px; font-size: 0.78rem;">Preset 1</button>
+              <button class="btn btn-outline" id="btn-preset-2" style="padding: 4px 8px; font-size: 0.78rem;">Preset 2</button>
+            </div>
+          </div>
+          <textarea id="inputText" rows="6" placeholder="Enter plaintext to encrypt or ciphertext to crack...">Cryptography is the practice and study of techniques for secure communication in the presence of adversarial third parties. Classical ciphers build the intuition for modern encryption protocols like AES and RSA.</textarea>
+        </div>
+
+        <!-- Input Text Metrics -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Letter Count</div>
+            <div class="stat-value" id="metric-count">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Index of Coincidence</div>
+            <div class="stat-value" id="metric-ioc">0.0000</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Chi-Squared (χ²)</div>
+            <div class="stat-value" id="metric-chi">0.00</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Output Panel -->
+      <div class="glass-card">
+        
+        <!-- Standard Output Panel (Encrypt/Decrypt) -->
+        <div id="standard-output-panel">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📄 Processed Output</span>
+            </div>
+            <div>
+              <button class="btn btn-outline" id="btn-copy-output" style="padding: 6px 12px; font-size: 0.82rem;">
+                📋 Copy
+              </button>
+              <span class="copied-tooltip" id="copy-tip-1">Copied!</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <textarea id="outputText" rows="12" readonly placeholder="Output will appear here..."></textarea>
+          </div>
+        </div>
+
+        <!-- Automated Cryptanalysis Output Panel (Crack Mode) -->
+        <div id="crack-output-panel" style="display: none;">
+          <div class="card-header">
+            <div class="card-title">
+              <span style="color: #38bdf8;">⚡ Automated Cryptanalysis Engine</span>
+            </div>
+            <div>
+              <button class="btn btn-outline" id="btn-copy-cracked" style="padding: 6px 12px; font-size: 0.82rem;">
+                📋 Copy
+              </button>
+              <span class="copied-tooltip" id="copy-tip-2">Copied!</span>
+            </div>
+          </div>
+
+          <label>Recovered Plaintext:</label>
+          <div id="crackedPlaintext" style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 10px; padding: 14px; font-family: var(--font-mono); font-size: 0.92rem; color: #34d399; min-height: 110px; max-height: 180px; overflow-y: auto; white-space: pre-wrap; margin-bottom: 14px;"></div>
+
+          <label>Cryptanalysis Steps & Evidence:</label>
+          <div id="crackDetails" class="crack-breakdown">
+            <!-- Dynamic crack breakdown steps rendered by app.js -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Frequency Analysis Spectrum Chart -->
+    <div class="glass-card chart-card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>📊 Real-Time Letter Frequency Distribution Spectrum</span>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">
+          English Target IoC: ~0.0667 | Uniform Random: ~0.0385
+        </div>
+      </div>
+      <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 16px;">
+        Comparison between observed ciphertext letter frequency (Cyan) and standard English corpus distribution (Purple). 
+        Monoalphabetic substitution shifts the spectrum; polyalphabetic substitution flattens it towards uniform random.
+      </p>
+
+      <div class="chart-bars-container" id="chartBars">
+        <!-- Bars injected dynamically -->
+      </div>
+
+      <div class="chart-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background: #06b6d4;"></div>
+          <span>Observed Text Frequency</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background: #a855f7;"></div>
+          <span>Expected English Frequency (ETAOIN...)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deep Dive Educational & Interview Section -->
+    <section class="interview-guide">
+      <h2>🚀 Why Industry Likes This Project: Security Interview Preparation</h2>
+      <p style="color: var(--text-secondary); font-size: 0.98rem;">
+        Classical ciphers are rarely used for production data protection today, but mastering their mechanics, 
+        mathematical structures, and automated cryptanalysis is the gold standard for demonstrating core cryptographic principles.
+      </p>
+
+      <div class="interview-grid">
+        <div class="qa-card">
+          <div class="qa-q">1. Why are Classical Ciphers vulnerable to Frequency Analysis?</div>
+          <div class="qa-a">
+            Monoalphabetic ciphers (Caesar) have a 1-to-1 mapping: letter 'E' will always map to the same ciphertext letter. 
+            Because natural languages have non-uniform letter distributions (e.g., 'E' is ~12.7%, 'T' is ~9%), an adversary 
+            can calculate Chi-Squared (&chi;&sup2;) distance to recover the shift without testing every key.
+          </div>
+        </div>
+
+        <div class="qa-card purple">
+          <div class="qa-q">2. How does the Vigen&egrave;re Cipher get broken mathematically?</div>
+          <div class="qa-a">
+            Vigen&egrave;re is a polyalphabetic cipher that uses a repeating keyword. It is broken in two stages:
+            <strong>(1) Key Length Recovery:</strong> Using the <em>Index of Coincidence (IoC)</em> or Kasiski examination to detect key length <em>L</em>.
+            <strong>(2) Coset Slicing:</strong> Slicing ciphertext into <em>L</em> subsets, each of which is an independent Caesar cipher solved via frequency analysis!
+          </div>
+        </div>
+
+        <div class="qa-card emerald">
+          <div class="qa-q">3. Claude Shannon's Core Principles: Diffusion & Confusion</div>
+          <div class="qa-a">
+            Classical ciphers lack <strong>Diffusion</strong> (changing 1 plaintext bit should change 50% of ciphertext bits). 
+            In Caesar or Vigen&egrave;re, changing one letter changes exactly one ciphertext letter. 
+            Modern ciphers like AES use Substitution-Permutation Networks (SPN) with multi-round MixColumns and ShiftRows to destroy statistical patterns.
+          </div>
+        </div>
+
+        <div class="qa-card rose">
+          <div class="qa-q">4. Why Modern Encryption (AES / RSA / ECC) Replaced Classics</div>
+          <div class="qa-a">
+            <strong>Keyspace:</strong> Caesar has only 26 keys (instant brute force). Vigen&egrave;re's keyspace is limited by word length. AES-256 has 2<sup>256</sup> keys (~10<sup>77</sup>), making brute-force mathematically impossible under known physics. 
+            Furthermore, modern ciphers provide authenticated encryption (AES-GCM, ChaCha20-Poly1305) preventing tampering.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
