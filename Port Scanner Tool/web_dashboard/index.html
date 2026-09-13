@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApexPort | Cyber Security Port Scanner & Network Analysis Dashboard</title>
+  <meta name="description" content="High-performance network security port scanner built with socket programming, banner grabbing, and comparative Nmap benchmarking.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Cyber Background Elements -->
+  <div class="cyber-grid"></div>
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <div class="app-container">
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">APEX<span class="highlight">PORT</span> // SCANNER</h1>
+          <p class="brand-subtitle">LOW-LEVEL PYTHON SOCKET PROGRAMMING & NMAP BENCHMARK TOOL</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-tech">RFC 793 TCP STACK</span>
+        <span class="badge badge-status" id="systemStatusBadge">● ENGINE READY</span>
+      </div>
+    </header>
+
+    <!-- Top Configuration Dashboard -->
+    <section class="control-panel glass-panel">
+      <div class="panel-header">
+        <span class="panel-title">TARGET CONFIGURATION & DISPATCH</span>
+        <span class="panel-tag">MULTI-THREADED CONCURRENCY</span>
+      </div>
+      <div class="controls-grid">
+        <div class="control-group">
+          <label for="targetInput">TARGET HOST / IP</label>
+          <div class="input-wrapper">
+            <input type="text" id="targetInput" value="127.0.0.1" placeholder="e.g., 127.0.0.1 or scanme.nmap.org">
+            <span class="input-icon">🎯</span>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="portPresetSelect">PORT PROFILE</label>
+          <select id="portPresetSelect">
+            <option value="quick">Quick Common (Top 20 Services)</option>
+            <option value="top50" selected>Top 50 Enterprise Ports</option>
+            <option value="well_known">Well-Known Ports (1 - 1024)</option>
+            <option value="custom">Custom Port Range...</option>
+          </select>
+        </div>
+
+        <div class="control-group custom-ports-group" id="customPortsWrapper" style="display: none;">
+          <label for="customPortsInput">CUSTOM PORTS</label>
+          <input type="text" id="customPortsInput" placeholder="e.g. 21,22,80,443,3000-3005" value="22,80,443,3000,8080">
+        </div>
+
+        <div class="control-group">
+          <label for="scanModeSelect">SCAN MODE</label>
+          <select id="scanModeSelect">
+            <option value="TCP">TCP Connect (Full 3-Way Handshake)</option>
+            <option value="UDP">UDP Datagram Probe</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="threadSlider">CONCURRENCY (<span id="threadCountDisplay">75</span> THREADS)</label>
+          <input type="range" id="threadSlider" min="10" max="250" value="75">
+        </div>
+      </div>
+
+      <div class="panel-actions">
+        <button id="startScanBtn" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          EXECUTE SCAN
+        </button>
+        <button id="stopScanBtn" class="btn btn-danger" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="6" width="12" height="12"></rect>
+          </svg>
+          ABORT
+        </button>
+        <div class="divider-vertical"></div>
+        <button id="tabBtnMatrix" class="btn btn-ghost active" onclick="switchMainTab('matrix')">Port Matrix View</button>
+        <button id="tabBtnTable" class="btn btn-ghost" onclick="switchMainTab('table')">Telemetry Table</button>
+        <button id="tabBtnNmap" class="btn btn-ghost" onclick="switchMainTab('nmap')">Nmap vs Custom</button>
+        <button id="tabBtnInterview" class="btn btn-ghost" onclick="switchMainTab('interview')">Recruiter Defense</button>
+        <div class="export-actions">
+          <button id="exportJsonBtn" class="btn btn-outline" title="Export scan to JSON">JSON</button>
+          <button id="exportCsvBtn" class="btn btn-outline" title="Export scan to CSV">CSV</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Real-Time Metric Telemetry Strip -->
+    <section class="metrics-grid">
+      <div class="metric-card glass-panel">
+        <div class="metric-label">PORTS PROBED</div>
+        <div class="metric-value" id="metricTotal">0</div>
+        <div class="metric-sub" id="metricPortRange">0 / 50 Completed</div>
+      </div>
+
+      <div class="metric-card glass-panel card-open">
+        <div class="metric-label">OPEN PORTS</div>
+        <div class="metric-value text-emerald" id="metricOpen">0</div>
+        <div class="metric-sub text-emerald">Active Services Discovered</div>
+      </div>
+
+      <div class="metric-card glass-panel card-filtered">
+        <div class="metric-label">FILTERED (STEALTH)</div>
+        <div class="metric-value text-amber" id="metricFiltered">0</div>
+        <div class="metric-sub text-amber">Firewall Blocked / Dropped</div>
+      </div>
+
+      <div class="metric-card glass-panel card-closed">
+        <div class="metric-label">CLOSED (RST)</div>
+        <div class="metric-value text-crimson" id="metricClosed">0</div>
+        <div class="metric-sub text-crimson">Host Rejected Connection</div>
+      </div>
+
+      <div class="metric-card glass-panel">
+        <div class="metric-label">THROUGHPUT / LATENCY</div>
+        <div class="metric-value text-cyan" id="metricSpeed">0 <span class="unit">p/s</span></div>
+        <div class="metric-sub" id="metricLatency">Avg RTT: 0.00 ms</div>
+      </div>
+    </section>
+
+    <!-- Scan Progress Bar -->
+    <div class="progress-container glass-panel">
+      <div class="progress-meta">
+        <span id="scanStatusText">Status: Engine idle. Ready to deploy socket probes.</span>
+        <span id="scanPercentText">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressBarFill" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- Main Content Area with Switchable Views -->
+    <main class="main-content">
+      <!-- VIEW 1: Visual Interactive Port Grid Matrix -->
+      <section id="viewMatrix" class="tab-view active">
+        <div class="glass-panel port-matrix-panel">
+          <div class="panel-header">
+            <span class="panel-title">INTERACTIVE PORT TOPOLOGY MATRIX (1 - 1000)</span>
+            <div class="legend">
+              <span class="legend-item"><span class="dot dot-open"></span> Open</span>
+              <span class="legend-item"><span class="dot dot-filtered"></span> Filtered</span>
+              <span class="legend-item"><span class="dot dot-closed"></span> Closed</span>
+              <span class="legend-item"><span class="dot dot-idle"></span> Unscanned</span>
+            </div>
+          </div>
+          <p class="matrix-instruction">Hover over or click any node in the topology grid to view socket handshake diagnostics and banner info.</p>
+          <div class="port-grid" id="portGridContainer">
+            <!-- Dynamically populated 1000-port visual grid -->
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: Data Telemetry Table -->
+      <section id="viewTable" class="tab-view">
+        <div class="glass-panel table-panel">
+          <div class="panel-header">
+            <span class="panel-title">DISCOVERED PORT TELEMETRY</span>
+            <input type="text" id="tableFilterInput" class="table-search" placeholder="Filter by port, service, state, or risk...">
+          </div>
+          <div class="table-wrapper">
+            <table class="telemetry-table" id="resultsTable">
+              <thead>
+                <tr>
+                  <th>PORT</th>
+                  <th>PROTO</th>
+                  <th>STATE</th>
+                  <th>SERVICE NAME</th>
+                  <th>LATENCY (RTT)</th>
+                  <th>RISK</th>
+                  <th>APPLICATION BANNER / SIGNATURE</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="resultsTableBody">
+                <tr class="empty-row">
+                  <td colspan="8">No ports scanned yet. Click "EXECUTE SCAN" above.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: Nmap vs Custom Tool Comparison Benchmark -->
+      <section id="viewNmap" class="tab-view">
+        <div class="glass-panel benchmark-panel">
+          <div class="panel-header">
+            <span class="panel-title">CUSTOM SOCKET SCANNER VS NMAP BENCHMARK SCORECARD</span>
+            <span class="badge badge-tech">ARCHITECTURE DEEP-DIVE</span>
+          </div>
+
+          <div class="benchmark-grid">
+            <div class="benchmark-card">
+              <h3>🛠️ Our Custom Socket Scanner</h3>
+              <ul>
+                <li><strong>OS Layer:</strong> Uses standard BSD Socket API (<code>socket.connect_ex</code>).</li>
+                <li><strong>Handshake:</strong> Completes full 3-Way TCP Handshake (SYN → SYN/ACK → ACK).</li>
+                <li><strong>Privileges:</strong> Userland only (No Admin/Root required).</li>
+                <li><strong>Stack:</strong> Relies on OS kernel TCP state machine.</li>
+                <li><strong>Telemetry:</strong> Real-time latency measurement and application banner probing.</li>
+              </ul>
+            </div>
+
+            <div class="benchmark-card">
+              <h3>⚡ Nmap Professional Suite (-sS)</h3>
+              <ul>
+                <li><strong>OS Layer:</strong> Raw packet crafting via <code>libpcap / Npcap</code>.</li>
+                <li><strong>Handshake:</strong> SYN Stealth Half-Open (SYN → SYN/ACK → RST).</li>
+                <li><strong>Privileges:</strong> Administrator / Root required for raw socket access.</li>
+                <li><strong>Stack:</strong> Bypasses OS TCP stack to forge custom IP/TCP frames.</li>
+                <li><strong>Telemetry:</strong> Advanced OS fingerprinting via TCP window size & options.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="telemetry-table comparison-table">
+              <thead>
+                <tr>
+                  <th>EVALUATION METRIC</th>
+                  <th>OUR CUSTOM PYTHON ENGINE</th>
+                  <th>NMAP SYN SCAN (-sS)</th>
+                  <th>INDUSTRY & RECRUITER SIGNIFICANCE</th>
+                </tr>
+              </thead>
+              <tbody id="comparisonTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: Recruiter Interview Defense & Networking Deep Dive -->
+      <section id="viewInterview" class="tab-view">
+        <div class="glass-panel interview-panel">
+          <div class="panel-header">
+            <span class="panel-title">PORTFOLIO DEFENSE & TECHNICAL INTERVIEW GUIDE</span>
+            <span class="badge badge-status">RECRUITER READY</span>
+          </div>
+          <div class="interview-content">
+            <div class="faq-card">
+              <div class="faq-question">1. Why is building a port scanner from scratch more impressive than using Nmap?</div>
+              <div class="faq-answer">
+                Anyone can execute <code>nmap -sV target</code> from a terminal. Building this project from scratch proves you understand:
+                <ul>
+                  <li>How operating system network sockets are initialized, configured, and bound.</li>
+                  <li>How TCP 3-way handshakes work at the RFC 793 protocol level.</li>
+                  <li>How non-blocking I/O and thread-pool concurrency manage hundreds of simultaneous network connections without CPU bottlenecking.</li>
+                  <li>How to parse low-level OS error codes (<code>WSAECONNREFUSED</code> vs <code>WSAETIMEDOUT</code>) into meaningful security intelligence.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="faq-card">
+              <div class="faq-question">2. What is the packet-level difference between Open, Closed, and Filtered states?</div>
+              <div class="faq-answer">
+                <ul>
+                  <li><strong>OPEN:</strong> The target server responds to our <code>SYN</code> packet with a <code>SYN-ACK</code> packet. Our scanner completes the handshake with an <code>ACK</code> and transitions the socket to an established connection.</li>
+                  <li><strong>CLOSED:</strong> The target host is reachable, but no application is listening on that port. The target OS kernel automatically replies with an active <code>RST</code> (Reset) packet, triggering <code>ECONNREFUSED</code>.</li>
+                  <li><strong>FILTERED:</strong> A firewall (stateful inspection or cloud security group) intercepts and silently drops our <code>SYN</code> packet. No response returns, causing our socket to reach its timeout threshold (<code>ETIMEDOUT</code>).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="faq-card">
+              <div class="faq-question">3. How does Banner Grabbing work in this tool?</div>
+              <div class="faq-answer">
+                Once a TCP connection is established, services like SSH (22), FTP (21), and SMTP (25) proactively send unprompted identification strings (e.g., <code>SSH-2.0-OpenSSH_8.9p1</code>). For web and database services (80, 443, 6379), our scanner transmits tailored protocol probes (e.g. <code>HEAD / HTTP/1.1</code> or <code>INFO\r\n</code>) to extract version headers and fingerprint the running software.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal for Port Deep Inspection -->
+    <div class="modal-overlay" id="portModal">
+      <div class="modal-content glass-panel">
+        <div class="modal-header">
+          <h2 id="modalPortTitle">PORT INSPECTION DETAILS</h2>
+          <button class="modal-close" id="modalCloseBtn">&times;</button>
+        </div>
+        <div class="modal-body" id="modalPortBody">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

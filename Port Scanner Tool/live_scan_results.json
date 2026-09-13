@@ -1,0 +1,237 @@
+{
+  "target": "127.0.0.1",
+  "target_ip": "127.0.0.1",
+  "hostname": "gen-webserver.internal",
+  "scan_type": "TCP",
+  "total_ports_scanned": 20,
+  "open_ports_count": 2,
+  "closed_ports_count": 0,
+  "filtered_ports_count": 18,
+  "scan_duration_sec": 1.027,
+  "ports_per_sec": 19.5,
+  "avg_open_latency_ms": 1.46,
+  "open_ports": [
+    {
+      "port": 135,
+      "state": "OPEN",
+      "proto": "TCP",
+      "latency_ms": 1.41,
+      "banner": "",
+      "service": "MSRPC",
+      "description": "Microsoft Windows RPC Endpoint Mapper",
+      "risk": "High"
+    },
+    {
+      "port": 445,
+      "state": "OPEN",
+      "proto": "TCP",
+      "latency_ms": 1.5,
+      "banner": "",
+      "service": "SMB",
+      "description": "Microsoft Server Message Block (File Sharing)",
+      "risk": "Critical"
+    }
+  ],
+  "all_results": [
+    {
+      "port": 21,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1001.84,
+      "banner": "",
+      "service": "FTP",
+      "description": "File Transfer Protocol (Control / Command)",
+      "risk": "High"
+    },
+    {
+      "port": 22,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1001.85,
+      "banner": "",
+      "service": "SSH",
+      "description": "Secure Shell (Remote Encrypted Terminal)",
+      "risk": "Medium"
+    },
+    {
+      "port": 23,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1001.18,
+      "banner": "",
+      "service": "Telnet",
+      "description": "Unencrypted Text Communications",
+      "risk": "Critical"
+    },
+    {
+      "port": 25,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1000.17,
+      "banner": "",
+      "service": "SMTP",
+      "description": "Simple Mail Transfer Protocol (Email Routing)",
+      "risk": "Medium"
+    },
+    {
+      "port": 53,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 999.52,
+      "banner": "",
+      "service": "DNS",
+      "description": "Domain Name System",
+      "risk": "Low"
+    },
+    {
+      "port": 80,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1014.85,
+      "banner": "",
+      "service": "HTTP",
+      "description": "Hypertext Transfer Protocol (World Wide Web)",
+      "risk": "Medium"
+    },
+    {
+      "port": 110,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1014.32,
+      "banner": "",
+      "service": "POP3",
+      "description": "Post Office Protocol v3 (Unencrypted Mail)",
+      "risk": "High"
+    },
+    {
+      "port": 135,
+      "state": "OPEN",
+      "proto": "TCP",
+      "latency_ms": 1.41,
+      "banner": "",
+      "service": "MSRPC",
+      "description": "Microsoft Windows RPC Endpoint Mapper",
+      "risk": "High"
+    },
+    {
+      "port": 139,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1012.97,
+      "banner": "",
+      "service": "NetBIOS-SSN",
+      "description": "NetBIOS Session Service",
+      "risk": "High"
+    },
+    {
+      "port": 143,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1011.21,
+      "banner": "",
+      "service": "IMAP",
+      "description": "Internet Message Access Protocol",
+      "risk": "Medium"
+    },
+    {
+      "port": 443,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1009.75,
+      "banner": "",
+      "service": "HTTPS",
+      "description": "HTTP over TLS/SSL (Secure Web)",
+      "risk": "Low"
+    },
+    {
+      "port": 445,
+      "state": "OPEN",
+      "proto": "TCP",
+      "latency_ms": 1.5,
+      "banner": "",
+      "service": "SMB",
+      "description": "Microsoft Server Message Block (File Sharing)",
+      "risk": "Critical"
+    },
+    {
+      "port": 1433,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1009.42,
+      "banner": "",
+      "service": "MSSQL",
+      "description": "Microsoft SQL Server Database Engine",
+      "risk": "High"
+    },
+    {
+      "port": 3306,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1008.47,
+      "banner": "",
+      "service": "MySQL",
+      "description": "MySQL / MariaDB Database Server",
+      "risk": "High"
+    },
+    {
+      "port": 3389,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1007.05,
+      "banner": "",
+      "service": "RDP",
+      "description": "Microsoft Remote Desktop Protocol",
+      "risk": "High"
+    },
+    {
+      "port": 5432,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1006.62,
+      "banner": "",
+      "service": "PostgreSQL",
+      "description": "PostgreSQL Relational Database",
+      "risk": "High"
+    },
+    {
+      "port": 6379,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1006.51,
+      "banner": "",
+      "service": "Redis",
+      "description": "Redis In-Memory Key-Value Store",
+      "risk": "High"
+    },
+    {
+      "port": 8080,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1006.45,
+      "banner": "",
+      "service": "HTTP-Proxy",
+      "description": "HTTP Alternate / Apache Tomcat / Proxy",
+      "risk": "Medium"
+    },
+    {
+      "port": 8443,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1005.31,
+      "banner": "",
+      "service": "HTTPS-Alt",
+      "description": "HTTPS Alternate / Management Console",
+      "risk": "Low"
+    },
+    {
+      "port": 27017,
+      "state": "FILTERED",
+      "proto": "TCP",
+      "latency_ms": 1003.83,
+      "banner": "",
+      "service": "MongoDB",
+      "description": "MongoDB NoSQL Database Server",
+      "risk": "High"
+    }
+  ]
+}
