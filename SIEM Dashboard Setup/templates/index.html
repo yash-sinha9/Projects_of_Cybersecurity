@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberGuard SOC - Enterprise SIEM Dashboard</title>
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Top Cyber SOC Navigation Header -->
+    <header class="soc-header">
+        <div class="header-left">
+            <div class="logo-shield">
+                <span class="shield-icon">🛡️</span>
+                <span class="pulse-ring"></span>
+            </div>
+            <div>
+                <div class="brand-title">CYBERGUARD <span class="accent-text">SIEM CORE</span></div>
+                <div class="brand-subtitle">Security Operations Center &middot; Unified Threat Intelligence</div>
+            </div>
+        </div>
+
+        <div class="header-center">
+            <div class="status-indicator">
+                <span class="live-beacon"></span>
+                <span>REAL-TIME INGESTION ACTIVE</span>
+            </div>
+            <div class="clock-display" id="liveClock">00:00:00 UTC</div>
+        </div>
+
+        <div class="header-right">
+            <button class="btn btn-warning" id="btnSimulateAttack" onclick="triggerAttackSimulation()">
+                ⚡ Trigger Attack Burst
+            </button>
+            <button class="btn btn-outline" id="btnToggleSim" onclick="toggleTelemetryStream()">
+                <span id="simToggleText">⏸ Pause Stream</span>
+            </button>
+            <button class="btn btn-primary" onclick="openModal('ingestModal')">
+                ➕ Ingest Raw Log
+            </button>
+            <button class="btn btn-secondary" onclick="openModal('rulesModal')">
+                ⚙️ Detection Rules
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="dashboard-container">
+        
+        <!-- Metrics / KPI Row -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">TOTAL LOGS INGESTED</span>
+                    <span class="kpi-icon">📊</span>
+                </div>
+                <div class="kpi-value" id="kpiTotalLogs">0</div>
+                <div class="kpi-subtext"><span class="badge-tag">Normalized CIM</span> Normalized &amp; Parsed</div>
+            </div>
+
+            <div class="kpi-card alert-card-highlight">
+                <div class="kpi-header">
+                    <span class="kpi-title">FAILED LOGIN ATTEMPTS</span>
+                    <span class="kpi-icon">🚫</span>
+                </div>
+                <div class="kpi-value red-glow" id="kpiFailedLogins">0</div>
+                <div class="kpi-subtext" id="kpiFailedPercent">0% of authentications</div>
+            </div>
+
+            <div class="kpi-card warning-card-highlight">
+                <div class="kpi-header">
+                    <span class="kpi-title">ACTIVE SECURITY ALERTS</span>
+                    <span class="kpi-icon">🚨</span>
+                </div>
+                <div class="kpi-value orange-glow" id="kpiActiveAlerts">0</div>
+                <div class="kpi-subtext"><span class="critical-count" id="kpiCriticalAlerts">0 Critical</span> pending triage</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">TOP ADVERSARY IP</span>
+                    <span class="kpi-icon">🌐</span>
+                </div>
+                <div class="kpi-value ip-font cyan-glow" id="kpiTopIp">---</div>
+                <div class="kpi-subtext" id="kpiTopIpGeo">External Threat Intelligence</div>
+            </div>
+        </section>
+
+        <!-- Charts Row -->
+        <section class="analytics-grid">
+            <!-- Timeline Chart -->
+            <div class="glass-panel chart-box">
+                <div class="panel-header">
+                    <h3>📈 Authentication &amp; Attack Telemetry (Time-Series)</h3>
+                    <span class="badge-live">Live 10-Min Sliding Window</span>
+                </div>
+                <div class="chart-canvas-container">
+                    <canvas id="timeSeriesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Threat Breakdown Doughnut -->
+            <div class="glass-panel chart-box-side">
+                <div class="panel-header">
+                    <h3>🎯 Event Distribution</h3>
+                    <span class="badge-neutral">MITRE Categories</span>
+                </div>
+                <div class="chart-canvas-container doughnut-wrap">
+                    <canvas id="eventPieChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Threat Tracking Row: Top Attacker IPs & Targeted Users -->
+        <section class="tracking-grid">
+            <!-- Top Attacking IPs Table -->
+            <div class="glass-panel top-ips-box">
+                <div class="panel-header">
+                    <h3>🛑 Top Attacker IPs &amp; Threat Scoring</h3>
+                    <span class="badge-neutral">Automated Threat Scoring Matrix</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="soc-table">
+                        <thead>
+                            <tr>
+                                <th>Source IP</th>
+                                <th>Origin</th>
+                                <th>Total Events</th>
+                                <th>Failed Logins</th>
+                                <th>Threat Score</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topIpsBody">
+                            <tr><td colspan="6" class="text-center">Loading threat intelligence...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Targeted Accounts Card -->
+            <div class="glass-panel targeted-users-box">
+                <div class="panel-header">
+                    <h3>👤 Most Targeted User Accounts</h3>
+                    <span class="badge-neutral">Brute-Force Targets</span>
+                </div>
+                <div class="user-target-list" id="targetedUsersList">
+                    <div class="text-center">Loading targets...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-Time Alerts Management Table -->
+        <section class="alerts-section">
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <div class="title-with-badge">
+                        <h3>🚨 Real-Time Security Incident Queue (SOC Triage)</h3>
+                        <span class="badge-counter" id="alertCountBadge">0 Alerts</span>
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn btn-sm btn-outline active" onclick="filterAlerts('ALL')">All</button>
+                        <button class="btn btn-sm btn-danger" onclick="filterAlerts('CRITICAL')">Critical</button>
+                        <button class="btn btn-sm btn-warning" onclick="filterAlerts('HIGH')">High</button>
+                        <button class="btn btn-sm btn-success" onclick="filterAlerts('RESOLVED')">Resolved</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="soc-table alerts-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Severity</th>
+                                <th>Alert Title</th>
+                                <th>Source IP</th>
+                                <th>Target</th>
+                                <th>Status</th>
+                                <th>Triage Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alertsTableBody">
+                            <tr><td colspan="7" class="text-center">Monitoring for active intrusions...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Raw Log Stream & Ingestion Inspector -->
+        <section class="logs-section">
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <div class="title-with-badge">
+                        <h3>📜 Live Normalized Log Feed &amp; Search</h3>
+                        <span class="badge-live">Auto-Streaming</span>
+                    </div>
+                    <div class="log-controls">
+                        <input type="text" id="logSearchInput" placeholder="Filter by IP, User, Message..." onkeyup="handleLogSearch()">
+                        <select id="logSeverityFilter" onchange="fetchLogs()">
+                            <option value="ALL">All Severities</option>
+                            <option value="CRITICAL">Critical</option>
+                            <option value="HIGH">High</option>
+                            <option value="MEDIUM">Medium</option>
+                            <option value="INFO">Info</option>
+                        </select>
+                        <select id="logEventTypeFilter" onchange="fetchLogs()">
+                            <option value="ALL">All Event Types</option>
+                            <option value="LOGIN_FAILED">LOGIN_FAILED</option>
+                            <option value="LOGIN_SUCCESS">LOGIN_SUCCESS</option>
+                            <option value="WEB_ATTACK">WEB_ATTACK</option>
+                            <option value="PRIV_ESC">PRIV_ESC</option>
+                            <option value="FIREWALL_DROP">FIREWALL_DROP</option>
+                        </select>
+                        <button class="btn btn-sm btn-outline" onclick="fetchLogs()">🔄 Refresh</button>
+                    </div>
+                </div>
+                <div class="table-responsive log-stream-container">
+                    <table class="soc-table log-stream-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Source Type</th>
+                                <th>Event Type</th>
+                                <th>Source IP</th>
+                                <th>User</th>
+                                <th>Status</th>
+                                <th>Severity</th>
+                                <th>Raw Log Message</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logStreamBody">
+                            <tr><td colspan="8" class="text-center">Streaming incoming logs...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal: Ingest Custom Raw Log -->
+    <div id="ingestModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>📥 Ingest Custom Log (Log Normalizer Test)</h3>
+                <button class="modal-close" onclick="closeModal('ingestModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Paste a raw log string below. The Normalizer engine will parse it into Common Information Model (CIM) and run the Alert Correlation Engine in real-time.</p>
+                <div class="preset-buttons">
+                    <button class="btn btn-sm btn-outline" onclick="loadSampleLog('ssh')">Linux SSH Brute Force</button>
+                    <button class="btn btn-sm btn-outline" onclick="loadSampleLog('win')">Windows Event 4625</button>
+                    <button class="btn btn-sm btn-outline" onclick="loadSampleLog('sqli')">Web SQL Injection</button>
+                    <button class="btn btn-sm btn-outline" onclick="loadSampleLog('sudo')">Privilege Escalation</button>
+                </div>
+                <div class="form-group">
+                    <label for="rawLogInput">Raw Log Entry:</label>
+                    <textarea id="rawLogInput" rows="4" class="code-font" placeholder="Oct 06 14:22:10 soc-svr sshd[2841]: Failed password for invalid user admin from 185.220.101.5 port 55123 ssh2"></textarea>
+                </div>
+                <div id="ingestResultBox" class="ingest-result hidden"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('ingestModal')">Close</button>
+                <button class="btn btn-primary" onclick="submitCustomLog()">Ingest &amp; Normalize</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Detection Rules Management -->
+    <div id="rulesModal" class="modal-overlay">
+        <div class="modal-box modal-wide">
+            <div class="modal-header">
+                <h3>⚙️ Configured Real-Time Detection Rules</h3>
+                <button class="modal-close" onclick="closeModal('rulesModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="soc-table rules-table">
+                    <thead>
+                        <tr>
+                            <th>Rule Name</th>
+                            <th>Target Event</th>
+                            <th>Threshold</th>
+                            <th>Window</th>
+                            <th>Severity</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rulesTableBody">
+                        <tr><td colspan="6" class="text-center">Loading detection rules...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('rulesModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
